@@ -1,0 +1,31 @@
+{
+  "name": "claude-ui",
+  "version": "1.0.0",
+  "description": "A lightweight viewer for Claude AI responses and artifacts",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "http-server src -o",
+    "build": "node scripts/build.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "claude",
+    "ui",
+    "artifact",
+    "renderer",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "html-minifier": "^4.0.0",
+    "http-server": "^14.1.1",
+    "jest": "^29.5.0",
+    "uglify-js": "^3.17.4"
+  },
+  "dependencies": {
+    "marked": "^4.3.0",
+    "mermaid": "^10.2.4",
+    "prismjs": "^1.29.0"
+  }
+}

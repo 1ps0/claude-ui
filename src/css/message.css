@@ -1,0 +1,91 @@
+/* 
+ * Claude UI Elements
+ * message.css - Styling for message bubbles and content
+ */
+
+/* Message bubbles */
+.user-message {
+  align-self: flex-end;
+  background-color: #F1F5F9;
+  border-radius: 1rem 1rem 0 1rem;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  max-width: 80%;
+}
+
+.claude-message {
+  align-self: flex-start;
+  background-color: #F8FAFC;
+  border-radius: 1rem 1rem 1rem 0;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  max-width: 80%;
+  border-left: 3px solid #7C3AED;
+}
+
+/* Message text formatting */
+.message-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.message-text p {
+  margin-bottom: 0.75rem;
+}
+
+.message-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Links within messages */
+.message-text a {
+  color: #7C3AED;
+  text-decoration: none;
+}
+
+.message-text a:hover {
+  text-decoration: underline;
+}
+
+/* Inline code */
+.message-text code {
+  background-color: #F1F5F9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+/* Message metadata */
+.message-metadata {
+  font-size: 0.8rem;
+  color: #64748B;
+  margin-top: 0.25rem;
+  text-align: right;
+}
+
+/* Message avatar/icon */
+.message-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+/* Message header with role indicator */
+.message-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+/* Error state for messages */
+.error {
+  border-left-color: #EF4444;
+}
+
+.error .message-text {
+  color: #EF4444;
+}

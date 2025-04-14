@@ -1,0 +1,189 @@
+/* 
+ * Claude UI Elements
+ * artifacts.css - Styling for various artifact types
+ */
+
+/* Base artifact container */
+.artifact-container {
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid #E2E8F0;
+  background-color: white;
+}
+
+/* Artifact header */
+.artifact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+/* Artifact title */
+.artifact-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+/* Artifact type badge */
+.artifact-type {
+  font-size: 0.8rem;
+  background-color: #E2E8F0;
+  color: #475569;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+}
+
+/* Artifact content container */
+.artifact-content {
+  padding: 1rem;
+  overflow: auto;
+  max-height: 500px;
+}
+
+/* Code artifact styling */
+.artifact-content pre {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+.artifact-content code {
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9rem;
+  display: block;
+  overflow-x: auto;
+}
+
+/* Markdown artifact styling */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-content h1 {
+  font-size: 1.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.25rem;
+}
+
+.markdown-content p {
+  margin-bottom: 1rem;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-content a {
+  color: #7C3AED;
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid #E2E8F0;
+  padding-left: 1rem;
+  margin-left: 0;
+  color: #64748B;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.markdown-content table th,
+.markdown-content table td {
+  border: 1px solid #E2E8F0;
+  padding: 0.5rem;
+}
+
+.markdown-content table th {
+  background-color: #F8FAFC;
+}
+
+/* HTML artifact styling */
+.html-container iframe {
+  width: 100%;
+  min-height: 300px;
+  border: none;
+}
+
+/* SVG artifact styling */
+.svg-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mermaid artifact styling */
+.mermaid-container {
+  text-align: center;
+}
+
+/* React artifact styling */
+.react-container {
+  min-height: 100px;
+}
+
+/* Copy button */
+.copy-button {
+  background-color: #7C3AED;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.copy-button:hover {
+  background-color: #6D28D9;
+}
+
+/* Artifact actions container */
+.artifact-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Expand/collapse button */
+.expand-button {
+  background: none;
+  border: none;
+  color: #64748B;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Expanded artifact content */
+.artifact-content.expanded {
+  max-height: none;
+}

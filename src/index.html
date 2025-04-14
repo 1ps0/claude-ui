@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude UI Elements</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/message.css">
+  <link rel="stylesheet" href="css/artifacts.css">
+  <!-- External libraries -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+</head>
+<body>
+  <div id="claude-app" class="claude-container">
+    <div class="claude-header">
+      <h1>Claude UI</h1>
+    </div>
+    <div id="message-container" class="message-container"></div>
+    <div class="test-controls">
+      <button id="load-test-button">Load Test Response</button>
+      <button id="clear-button">Clear</button>
+    </div>
+  </div>
+
+  <!-- External libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.4/mermaid.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.21.4/babel.min.js"></script>
+
+  <!-- Application scripts -->
+  <script src="js/renderers/CodeRenderer.js"></script>
+  <script src="js/renderers/MarkdownRenderer.js"></script>
+  <script src="js/renderers/HtmlRenderer.js"></script>
+  <script src="js/renderers/SvgRenderer.js"></script>
+  <script src="js/renderers/MermaidRenderer.js"></script>
+  <script src="js/renderers/ReactRenderer.js"></script>
+  <script src="js/ArtifactFactory.js"></script>
+  <script src="js/MessageRenderer.js"></script>
+  <script src="js/ClaudeUI.js"></script>
+  <script src="test/sampleResponses.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
