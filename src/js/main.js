@@ -25,7 +25,7 @@ import { marked } from 'marked'; // Use named import if that's how marked export
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Claude UI with the container element
   const claudeUI = new ClaudeUI('message-container');
-  
+
   // Remove event listener setup for the test button
   /*
   const loadTestButton = document.getElementById('load-test-button');
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   */
-  
+
   // Clear button functionality
   const clearButton = document.getElementById('clear-button');
   if (clearButton) {
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       claudeUI.clear();
     });
   }
-  
+
   // File input for loading JSON conversations
   const fileInput = document.getElementById('file-input');
   if (fileInput) {
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  
+
   // Load file button functionality
   const loadFileButton = document.getElementById('load-file-button');
   if (loadFileButton) {
@@ -77,42 +77,42 @@ document.addEventListener('DOMContentLoaded', () => {
       fileInput.click();
     });
   }
-  
+
   // Theme toggle functionality
   const themeToggle = document.getElementById('theme-toggle');
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
       toggleDarkMode();
     });
-    
+
     // Initialize theme based on saved preference or system preference
     initializeTheme();
   }
-  
+
   // Initialize Mermaid library if available
   if (window.mermaid) {
     mermaid.initialize({
       startOnLoad: false,
       theme: isDarkMode() ? 'dark' : 'neutral',
-      securityLevel: 'strict'
+      securityLevel: 'strict',
     });
   }
-  
+
   // Set up marked.js options if available
   if (window.marked) {
     marked.setOptions({
       gfm: true,
       breaks: true,
-      sanitize: true
+      sanitize: true,
     });
   }
-  
+
   // Uncomment the following line to enable this behavior
   // claudeUI.renderResponse(window.sampleResponses[0]);
-  
+
   // Expose UI instance to window for debugging (optional)
   window.claudeUI = claudeUI;
-  
+
   console.log('Claude UI Elements initialized successfully via Vite');
 });
 
@@ -125,46 +125,41 @@ function loadJsonFromFile(file, claudeUI) {
   if (!file) {
     return;
   }
-  
-  // Show loading indicator
+
+  console.log('[Debug] claudeUI instance in loadJsonFromFile:', claudeUI);
+  console.log(
+    '[Debug] typeof claudeUI.showLoading:',
+    typeof claudeUI.showLoading
+  );
+
   claudeUI.showLoading();
-  
+
   // Check file type
   if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
     claudeUI.hideLoading();
     claudeUI.showError('Please select a JSON file');
     return;
   }
-  
+
   const reader = new FileReader();
-  
+
   reader.onload = (event) => {
     try {
-      // Parse the JSON content
       const jsonData = JSON.parse(event.target.result);
-      
-      // Clear existing content
-      claudeUI.clear();
-      
-      // Render the conversation
-      claudeUI.renderResponse(jsonData);
-      
-      // Hide loading indicator
-      claudeUI.hideLoading();
+      claudeUI.loadConversationData(jsonData);
     } catch (error) {
       console.error('Error parsing JSON file:', error);
       claudeUI.hideLoading();
       claudeUI.showError('Failed to parse JSON file: ' + error.message);
     }
   };
-  
+
   reader.onerror = () => {
     console.error('Error reading file');
     claudeUI.hideLoading();
     claudeUI.showError('Error reading file');
   };
-  
-  // Read the file as text
+
   reader.readAsText(file);
 }
 
@@ -175,16 +170,16 @@ function loadJsonFromFile(file, claudeUI) {
  */
 function loadResponseFromUrl(url, callback) {
   fetch(url)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error('HTTP error! Status: ' + response.status);
       }
       return response.json();
     })
-    .then(data => {
+    .then((data) => {
       callback(data);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Error loading response:', error);
     });
 }
@@ -194,7 +189,9 @@ function loadResponseFromUrl(url, callback) {
  * @returns {boolean} True if the user is on a mobile device
  */
 function isMobileDevice() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
 }
 
 /**
@@ -206,7 +203,7 @@ function formatTimestamp(date) {
   return new Intl.DateTimeFormat('en-US', {
     hour: '2-digit',
     minute: '2-digit',
-    hour12: true
+    hour12: true,
   }).format(date);
 }
 
@@ -223,23 +220,23 @@ function isDarkMode() {
  */
 function toggleDarkMode() {
   const isDark = isDarkMode();
-  
+
   // Toggle dark mode class
   document.body.classList.toggle('dark-theme', !isDark);
-  
+
   // Save preference to localStorage
   localStorage.setItem('theme', !isDark ? 'dark' : 'light');
-  
+
   // Update Mermaid theme if available
   if (window.mermaid) {
     mermaid.initialize({
-      theme: !isDark ? 'dark' : 'neutral'
+      theme: !isDark ? 'dark' : 'neutral',
     });
-    
+
     // Re-render any existing Mermaid diagrams
     const mermaidContainers = document.querySelectorAll('.mermaid');
     if (mermaidContainers.length > 0) {
-      mermaidContainers.forEach(container => {
+      mermaidContainers.forEach((container) => {
         try {
           mermaid.init(undefined, container);
         } catch (e) {
@@ -248,7 +245,7 @@ function toggleDarkMode() {
       });
     }
   }
-  
+
   // Update Prism theme if needed
   updateCodeHighlighting(!isDark);
 }
@@ -259,19 +256,21 @@ function toggleDarkMode() {
 function initializeTheme() {
   // Check localStorage first
   const savedTheme = localStorage.getItem('theme');
-  
+
   if (savedTheme) {
     // Apply saved theme
     document.body.classList.toggle('dark-theme', savedTheme === 'dark');
   } else {
     // Check system preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    ).matches;
     document.body.classList.toggle('dark-theme', prefersDark);
-    
+
     // Save the preference
     localStorage.setItem('theme', prefersDark ? 'dark' : 'light');
   }
-  
+
   // Update code highlighting
   updateCodeHighlighting(isDarkMode());
 }
@@ -283,7 +282,9 @@ function initializeTheme() {
 function updateCodeHighlighting(isDark) {
   // This function can be expanded to dynamically switch Prism themes
   // or make other adjustments to code highlighting
-  
+
   // For now, we rely on CSS overrides in artifacts.css
-  console.log('Code highlighting updated for ' + (isDark ? 'dark' : 'light') + ' mode');
+  console.log(
+    'Code highlighting updated for ' + (isDark ? 'dark' : 'light') + ' mode'
+  );
 }

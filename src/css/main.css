@@ -13,47 +13,47 @@
 
 :root {
   /* Light theme variables */
-  --bg-color: #F9FAFB;
+  --bg-color: #f9fafb;
   --container-bg: white;
-  --header-bg: #7C3AED;
+  --header-bg: #7c3aed;
   --header-color: white;
   --text-color: #333;
-  --muted-text-color: #64748B;
-  --border-color: #E2E8F0;
-  --user-message-bg: #F1F5F9;
-  --assistant-message-bg: #F8FAFC;
-  --assistant-message-border: #7C3AED;
-  --code-bg: #F1F5F9;
-  --primary-button: #7C3AED;
-  --primary-button-hover: #6D28D9;
-  --secondary-button: #64748B;
+  --muted-text-color: #64748b;
+  --border-color: #e2e8f0;
+  --user-message-bg: #f1f5f9;
+  --assistant-message-bg: #f8fafc;
+  --assistant-message-border: #7c3aed;
+  --code-bg: #f1f5f9;
+  --primary-button: #7c3aed;
+  --primary-button-hover: #6d28d9;
+  --secondary-button: #64748b;
   --secondary-button-hover: #475569;
-  --file-button: #2563EB;
-  --file-button-hover: #1D4ED8;
+  --file-button: #2563eb;
+  --file-button-hover: #1d4ed8;
   --shadow-color: rgba(0, 0, 0, 0.1);
-  --error-color: #EF4444;
-  --error-bg: #FEF2F2;
-  --artifact-header-bg: #F8FAFC;
+  --error-color: #ef4444;
+  --error-bg: #fef2f2;
+  --artifact-header-bg: #f8fafc;
 }
 
 .dark-theme {
-  /* Dark theme variables */
-  --bg-color: #111827;
-  --container-bg: #1F2937;
-  --header-bg: #6D28D9;
+  /* Dark theme variables - Updated Palette (Blue/Gray Focus) */
+  --bg-color: #111827; /* Keep deep gray background */
+  --container-bg: #1F2937; /* Keep container background */
+  --header-bg: #1E40AF; /* Change header from purple to a deep blue */
   --header-color: white;
   --text-color: #F9FAFB;
   --muted-text-color: #9CA3AF;
   --border-color: #374151;
   --user-message-bg: #374151;
   --assistant-message-bg: #1F2937;
-  --assistant-message-border: #8B5CF6;
+  --assistant-message-border: #4B5563; /* Change border from purple to gray */
   --code-bg: #2D3748;
-  --primary-button: #6D28D9;
-  --primary-button-hover: #5B21B6;
+  --primary-button: #2563EB; /* Change primary button from purple to blue */
+  --primary-button-hover: #1D4ED8; /* Darker blue hover */
   --secondary-button: #4B5563;
   --secondary-button-hover: #374151;
-  --file-button: #1D4ED8;
+  --file-button: #1D4ED8; /* Keep a distinct blue, maybe slightly darker */
   --file-button-hover: #1E40AF;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --error-color: #F87171;
@@ -62,12 +62,16 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.5;
   color: var(--text-color);
   background-color: var(--bg-color);
-  padding: 2rem 1rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 1.5rem 1rem;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Main container */
@@ -76,18 +80,20 @@ body {
   margin: 0 auto;
   background-color: var(--container-bg);
   border-radius: 0.5rem;
-  box-shadow: 0 2px 10px var(--shadow-color);
+  box-shadow: 0 4px 15px var(--shadow-color);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-height: 800px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  max-height: calc(100vh - 3rem);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 /* Header */
 .claude-header {
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   background-color: var(--header-bg);
   color: var(--header-color);
   display: flex;
@@ -177,7 +183,7 @@ body:not(.dark-theme) .theme-toggle .moon-icon {
 .message-container {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 1.5rem;
   flex-grow: 1;
   overflow-y: auto;
   background-color: var(--container-bg);
@@ -186,7 +192,7 @@ body:not(.dark-theme) .theme-toggle .moon-icon {
 
 /* Test controls */
 .test-controls {
-  padding: 1rem;
+  padding: 0.75rem 1.5rem;
   border-top: 1px solid var(--border-color);
   display: flex;
   gap: 0.5rem;
@@ -233,9 +239,12 @@ body:not(.dark-theme) .theme-toggle .moon-icon {
   padding: 1rem;
   border: 1px solid var(--error-color);
   border-radius: 0.5rem;
-  margin: 1rem 0;
+  margin: 1rem 1.5rem;
   background-color: var(--error-bg);
-  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 /* Loading indicator */
@@ -263,8 +272,12 @@ body:not(.dark-theme) .theme-toggle .moon-icon {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Citations */
@@ -305,18 +318,90 @@ body:not(.dark-theme) .theme-toggle .moon-icon {
     height: calc(100vh - 2rem);
     margin: 0;
   }
-  
+
   body {
     padding: 1rem;
   }
-  
+
   .test-controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .conversation-metadata {
     flex-direction: column;
     gap: 0.25rem;
   }
+}
+
+/* --- Mark-2 Styles --- */
+
+#conversation-search-input {
+  display: none; /* Hidden by default, shown by JS */
+  width: calc(100% - 3rem);
+  padding: 0.6rem 0.8rem;
+  margin: 0 auto 1rem auto;
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  background-color: var(--container-bg);
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+#conversation-list-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#conversation-list-container li {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  overflow: hidden; /* Prevent float issues */
+  white-space: nowrap;
+}
+
+#conversation-list-container li:last-child {
+  border-bottom: none;
+}
+
+#conversation-list-container li:hover {
+  background-color: var(--user-message-bg);
+}
+
+#conversation-list-container li span:first-child {
+  /* Name */
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 60%; /* Prevent name from pushing date off */
+}
+
+#conversation-list-container li span:last-child {
+  /* Date */
+  font-size: 0.85rem;
+  color: var(--muted-text-color);
+  float: right;
+  line-height: 1.4; /* Align better with name */
+}
+
+#back-to-list-button {
+  display: none; /* Hidden by default */
+  /* Inherit general button styling from existing controls */
+  background-color: var(--secondary-button);
+  margin-right: 0.5rem; /* Spacing from other buttons */
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#back-to-list-button:hover {
+  background-color: var(--secondary-button-hover);
 }

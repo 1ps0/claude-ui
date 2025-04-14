@@ -18,7 +18,7 @@ export default class CodeArtifactRenderer {
     this.element = element;
     this.language = language || 'javascript';
   }
-  
+
   /**
    * Render code content with syntax highlighting
    * @param {string} content - Code content to render
@@ -26,19 +26,19 @@ export default class CodeArtifactRenderer {
   render(content) {
     // Remove any existing content
     this.element.innerHTML = '';
-    
+
     // Create pre and code elements
     const pre = document.createElement('pre');
     pre.className = 'line-numbers';
-    
+
     const code = document.createElement('code');
     code.className = 'language-' + this.language;
     code.textContent = content;
-    
+
     // Append elements
     pre.appendChild(code);
     this.element.appendChild(pre);
-    
+
     // Apply syntax highlighting if Prism object exists (imported)
     if (Prism) {
       try {
@@ -46,7 +46,7 @@ export default class CodeArtifactRenderer {
       } catch (error) {
         console.error('Error during syntax highlighting:', error);
       }
-      
+
       // Update Prism line numbers if available
       // Note: Prism plugins might need specific import/initialization
       if (Prism && Prism.plugins && Prism.plugins.lineNumbers) {
@@ -55,7 +55,7 @@ export default class CodeArtifactRenderer {
       }
     }
   }
-  
+
   /**
    * Set the language for syntax highlighting
    * @param {string} language - Programming language
@@ -63,7 +63,7 @@ export default class CodeArtifactRenderer {
   setLanguage(language) {
     this.language = language;
   }
-  
+
   /**
    * Automatically detect the language based on the content
    * @param {string} content - Code content to analyze
@@ -71,7 +71,7 @@ export default class CodeArtifactRenderer {
   detectAndSetLanguage(content) {
     this.language = ArtifactRendererFactory.detectLanguage(content);
   }
-  
+
   /**
    * Add line numbers to the code display
    * @param {boolean} show - Whether to show line numbers
@@ -84,7 +84,7 @@ export default class CodeArtifactRenderer {
       } else {
         pre.classList.remove('line-numbers');
       }
-      
+
       // Update Prism line numbers if available
       if (Prism && Prism.plugins && Prism.plugins.lineNumbers) {
         // This might require importing/running the line-numbers plugin setup
@@ -92,7 +92,7 @@ export default class CodeArtifactRenderer {
       }
     }
   }
-  
+
   /**
    * Toggle word wrap for the code display
    * @param {boolean} wrap - Whether to wrap lines

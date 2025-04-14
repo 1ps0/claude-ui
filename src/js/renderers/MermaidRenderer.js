@@ -15,7 +15,7 @@ export default class MermaidArtifactRenderer {
     this.element = element;
     this.element.classList.add('mermaid-container');
   }
-  
+
   /**
    * Render Mermaid diagram content
    * @param {string} content - Mermaid diagram definition to render
@@ -23,29 +23,30 @@ export default class MermaidArtifactRenderer {
   render(content) {
     // Remove any existing content
     this.element.innerHTML = '';
-    
+
     // Create a container for the diagram with the mermaid class
     const container = document.createElement('div');
     container.className = 'mermaid';
     container.textContent = content;
-    
+
     // Add a unique ID to the container for mermaid initialization
-    const uniqueId = 'mermaid-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+    const uniqueId =
+      'mermaid-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
     container.id = uniqueId;
-    
+
     // Append container to the DOM
     this.element.appendChild(container);
-    
+
     // Initialize Mermaid if available (imported)
     if (mermaid) {
       try {
         // Check if mermaid is already initialized (v9+ check)
         // Initialization might be better handled centrally in main.js
         // if (typeof mermaid.initialize === 'function') {
-          // Set default configuration
-          // mermaid.initialize({ ... }); // Possibly move to main.js
+        // Set default configuration
+        // mermaid.initialize({ ... }); // Possibly move to main.js
         // }
-        
+
         // Render the diagram
         this.renderDiagram(uniqueId, content);
       } catch (error) {
@@ -53,11 +54,13 @@ export default class MermaidArtifactRenderer {
         this.showError('Mermaid initialization error: ' + error.message);
       }
     } else {
-      console.warn('Mermaid library not loaded. Displaying raw content instead.');
+      console.warn(
+        'Mermaid library not loaded. Displaying raw content instead.'
+      );
       this.showError('Mermaid library not loaded. Displaying raw content.');
     }
   }
-  
+
   /**
    * Render a Mermaid diagram
    * @param {string} id - ID of the container element
@@ -68,15 +71,18 @@ export default class MermaidArtifactRenderer {
     if (typeof mermaid.render === 'function') {
       try {
         // New API (mermaid v9+)
-        mermaid.render(id, definition).then(({ svg, bindFunctions }) => {
-          document.getElementById(id).innerHTML = svg;
-          if (bindFunctions) {
-            bindFunctions(document.getElementById(id));
-          }
-        }).catch(error => {
-          console.error('Error rendering Mermaid diagram:', error);
-          this.showError('Diagram syntax error: ' + error.message);
-        });
+        mermaid
+          .render(id, definition)
+          .then(({ svg, bindFunctions }) => {
+            document.getElementById(id).innerHTML = svg;
+            if (bindFunctions) {
+              bindFunctions(document.getElementById(id));
+            }
+          })
+          .catch((error) => {
+            console.error('Error rendering Mermaid diagram:', error);
+            this.showError('Diagram syntax error: ' + error.message);
+          });
       } catch (error) {
         console.error('Error in Mermaid render process:', error);
         this.showError('Diagram rendering error: ' + error.message);
@@ -94,7 +100,7 @@ export default class MermaidArtifactRenderer {
       this.showError('Compatible Mermaid rendering method not found');
     }
   }
-  
+
   /**
    * Display an error message
    * @param {string} message - Error message to display
@@ -102,7 +108,7 @@ export default class MermaidArtifactRenderer {
   showError(message) {
     // Clear existing content
     this.element.innerHTML = '';
-    
+
     // Create error element
     const errorElement = document.createElement('div');
     errorElement.className = 'mermaid-error';
@@ -112,10 +118,10 @@ export default class MermaidArtifactRenderer {
     errorElement.style.borderRadius = '0.25rem';
     errorElement.style.backgroundColor = '#FEF2F2';
     errorElement.style.marginTop = '0.5rem';
-    
+
     // Add error message
     errorElement.textContent = message;
-    
+
     // Create pre element for diagram code
     const pre = document.createElement('pre');
     pre.style.marginTop = '0.5rem';
@@ -125,12 +131,12 @@ export default class MermaidArtifactRenderer {
     pre.style.overflow = 'auto';
     pre.style.fontSize = '0.8rem';
     pre.textContent = this.lastContent || '';
-    
+
     // Append elements
     this.element.appendChild(errorElement);
     this.element.appendChild(pre);
   }
-  
+
   /**
    * Set theme for Mermaid diagrams
    * @param {string} theme - Theme name
@@ -139,7 +145,7 @@ export default class MermaidArtifactRenderer {
     if (mermaid) {
       // Re-initialization for theme change might need updated API call for v10+
       // mermaid.initialize({ theme: theme }); // Check Mermaid docs for dynamic theme change
-      
+
       // Re-render if we have content already
       if (this.lastContent) {
         this.render(this.lastContent);

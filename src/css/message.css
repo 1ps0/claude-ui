@@ -1,12 +1,118 @@
 /* 
  * Claude UI Elements
- * artifacts.css - Styling for various artifact types
- * Version 2: Updated for dark mode support
+ * message.css - Styling for user and assistant messages
+ * Version 3: Mark-2 Enhancements & Spit-Shine
  */
 
-/* Base artifact container */
+/* Base message styling */
+.user-message,
+.claude-message {
+  margin-bottom: 1.5rem; /* Increased spacing between messages */
+  padding: 1rem 1.25rem; /* Increased padding within messages */
+  border-radius: 0.75rem; /* Slightly more rounded */
+  position: relative;
+  max-width: 90%; /* Prevent bubbles from being full width */
+  word-wrap: break-word; /* Ensure long words break */
+}
+
+/* User message specific styling */
+.user-message {
+  background-color: var(--user-message-bg);
+  margin-left: auto; /* Align user messages to the right */
+  border-bottom-right-radius: 0.25rem; /* Tail effect */
+}
+
+/* Claude/Assistant message specific styling */
+.claude-message {
+  background-color: var(--assistant-message-bg);
+  border: 1px solid var(--border-color);
+  margin-right: auto; /* Align assistant messages to the left */
+  border-bottom-left-radius: 0.25rem; /* Tail effect */
+}
+
+/* Message header (e.g., "Assistant" label) */
+.message-header {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted-text-color);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Message text content */
+.message-text {
+  line-height: 1.6; /* Improve readability */
+  color: var(--text-color);
+}
+
+.message-text p:last-child {
+  margin-bottom: 0; /* Remove extra space after last paragraph */
+}
+
+/* Message metadata (e.g., timestamp) */
+.message-metadata {
+  font-size: 0.75rem;
+  color: var(--muted-text-color);
+  text-align: right;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+}
+
+/* Ensure artifacts have spacing from text */
+.message-text + .artifact-container,
+.artifact-container + .artifact-container {
+  margin-top: 1rem;
+}
+
+/* Override artifact container margin within messages slightly */
+.user-message .artifact-container,
+.claude-message .artifact-container {
+  margin-left: 0;
+  margin-right: 0;
+  /* Keep top margin from rule above, remove bottom */
+  margin-bottom: 0; 
+}
+
+/* Add spacing below the last element before metadata */
+.message-text:last-child,
+.artifact-container:last-of-type {
+    margin-bottom: 0.5rem;
+}
+
+/* Ensure metadata is always below artifacts if both exist */
+.claude-message .message-metadata, 
+.user-message .message-metadata {
+    clear: both; /* In case of floats */
+}
+
+
+/* --- Inline Tag Styling (Mark-2 Tag Sweep) --- */
+
+.thinking-content {
+  display: block; /* Render as a block */
+  font-style: italic;
+  color: var(--muted-text-color);
+  background-color: var(--code-bg); /* Subtle background */
+  border-left: 3px solid var(--assistant-message-border);
+  padding: 0.5rem 0.8rem;
+  margin: 0.75rem 0; /* Add some vertical spacing */
+  border-radius: 0.25rem;
+}
+
+.pointer-content {
+  font-weight: 600;
+  color: var(--primary-button);
+  /* Optional: Add subtle background or border */
+  /* background-color: color-mix(in srgb, var(--primary-button) 10%, transparent); */
+  /* padding: 0.1em 0.3em; */
+  /* border-radius: 0.2em; */
+}
+
+/* --- Copied/Adjusted Artifact Styling from artifacts.css for context --- */
+/* Base artifact container adjustments within messages */
 .artifact-container {
-  margin: 1rem 0;
+  margin: 1rem 0; /* Default adjusted */
   border-radius: 0.5rem;
   overflow: hidden;
   border: 1px solid var(--border-color);
@@ -22,7 +128,9 @@
   padding: 0.5rem 1rem;
   background-color: var(--artifact-header-bg);
   border-bottom: 1px solid var(--border-color);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 /* Artifact title */
@@ -40,7 +148,9 @@
   color: var(--muted-text-color);
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Artifact content container */
@@ -118,7 +228,9 @@
   padding-left: 1rem;
   margin-left: 0;
   color: var(--muted-text-color);
-  transition: border-color 0.3s ease, color 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .markdown-content img {
@@ -228,7 +340,10 @@
   background-color: var(--error-bg);
   margin: 0.5rem 0;
   font-size: 0.9rem;
-  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 /* Dark mode specific adjustments for code highlighting */

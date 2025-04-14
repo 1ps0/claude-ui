@@ -4,7 +4,8 @@
  * Version 2: Refactored for Vite and ES Modules (using DOM manipulation)
  */
 
-export default class HtmlArtifactRenderer { // Export class
+export default class HtmlArtifactRenderer {
+  // Export class
   /**
    * Create a new HTML artifact renderer
    * @param {HTMLElement} element - Container element for the artifact
@@ -14,7 +15,7 @@ export default class HtmlArtifactRenderer { // Export class
     this.element.classList.add('html-container');
     this.iframe = null; // Keep track of the iframe
   }
-  
+
   /**
    * Render HTML content in a sandboxed iframe using DOM manipulation
    * @param {string} content - HTML content to render
@@ -22,40 +23,41 @@ export default class HtmlArtifactRenderer { // Export class
   render(content) {
     // Remove any existing content or iframe
     this.element.innerHTML = '';
-    
+
     // Create a sandboxed iframe for rendering HTML content
     this.iframe = document.createElement('iframe');
-    
+
     // Set sandbox attributes for security
     this.iframe.sandbox = 'allow-scripts allow-popups allow-same-origin';
-    
+
     // Set styling
     this.iframe.style.width = '100%';
     this.iframe.style.border = 'none';
     this.iframe.style.minHeight = '300px'; // Initial height
-    
+
     // Attach iframe to the DOM
     this.element.appendChild(this.iframe);
-    
+
     // Wait for iframe to load before accessing its contentDocument
     this.iframe.onload = () => {
-      const iframeDoc = this.iframe.contentDocument || this.iframe.contentWindow.document;
+      const iframeDoc =
+        this.iframe.contentDocument || this.iframe.contentWindow.document;
       if (!iframeDoc) {
         console.error('Could not access iframe document.');
         return;
       }
-      
+
       // Write the user's HTML content
       iframeDoc.open();
       iframeDoc.write(this.getBoilerplateHTML(content)); // Add basic structure
       iframeDoc.close();
-      
+
       // Inject the helper script using DOM methods
       this.injectHelperScript(iframeDoc);
-      
+
       // Initial height adjustment
       this.adjustIframeHeight();
-      
+
       // Set up message listener after content is loaded
       this.setupMessageListener();
     };
@@ -72,9 +74,12 @@ export default class HtmlArtifactRenderer { // Export class
    */
   getBoilerplateHTML(content) {
     // If content seems to be a full HTML doc, use it directly
-    if (content.trim().startsWith('<!DOCTYPE html') || content.trim().startsWith('<html')) {
-        // Potentially inject styles/scripts here if needed, but safer after load
-        return content;
+    if (
+      content.trim().startsWith('<!DOCTYPE html') ||
+      content.trim().startsWith('<html')
+    ) {
+      // Potentially inject styles/scripts here if needed, but safer after load
+      return content;
     }
     // Otherwise, wrap the content
     // Basic styles included here for simplicity, could be injected too
@@ -102,8 +107,8 @@ export default class HtmlArtifactRenderer { // Export class
    */
   injectHelperScript(iframeDoc) {
     try {
-        const scriptEl = iframeDoc.createElement('script');
-        scriptEl.textContent = `
+      const scriptEl = iframeDoc.createElement('script');
+      scriptEl.textContent = `
           function notifyParentResize() {
             // Debounce or throttle this if it fires too often
             const height = document.documentElement.scrollHeight;
@@ -117,17 +122,17 @@ export default class HtmlArtifactRenderer { // Export class
           // Fallback for simple cases
           setTimeout(notifyParentResize, 100); // Run after initial render
         `;
-        // Append to body or head
-        if (iframeDoc.body) {
-            iframeDoc.body.appendChild(scriptEl);
-        } else {
-             iframeDoc.head.appendChild(scriptEl); // Fallback
-        }
+      // Append to body or head
+      if (iframeDoc.body) {
+        iframeDoc.body.appendChild(scriptEl);
+      } else {
+        iframeDoc.head.appendChild(scriptEl); // Fallback
+      }
     } catch (error) {
-        console.error('Error injecting helper script into iframe:', error);
+      console.error('Error injecting helper script into iframe:', error);
     }
   }
-  
+
   /**
    * Adjust iframe height based on content or message
    * @param {number} [height] - Optional height from message
@@ -135,24 +140,25 @@ export default class HtmlArtifactRenderer { // Export class
   adjustIframeHeight(height) {
     if (!this.iframe) return;
     try {
-        const targetHeight = height || this.iframe.contentDocument?.documentElement?.scrollHeight;
-        if (targetHeight) {
-            // Add some padding
-            this.iframe.style.height = (targetHeight + 20) + 'px';
-        }
+      const targetHeight =
+        height || this.iframe.contentDocument?.documentElement?.scrollHeight;
+      if (targetHeight) {
+        // Add some padding
+        this.iframe.style.height = targetHeight + 20 + 'px';
+      }
     } catch (error) {
-        // Catch potential security errors accessing cross-origin frame content (if applicable)
-        console.warn('Could not automatically adjust iframe height:', error);
+      // Catch potential security errors accessing cross-origin frame content (if applicable)
+      console.warn('Could not automatically adjust iframe height:', error);
     }
   }
-  
+
   /**
    * Set up message listener for iframe communications
    */
   setupMessageListener() {
     // Ensure listener is only added once
     if (this.messageListener) {
-        window.removeEventListener('message', this.messageListener);
+      window.removeEventListener('message', this.messageListener);
     }
 
     this.messageListener = (event) => {
@@ -160,7 +166,7 @@ export default class HtmlArtifactRenderer { // Export class
       if (!this.iframe || event.source !== this.iframe.contentWindow) {
         return;
       }
-      
+
       // Handle resize messages
       if (event.data && event.data.type === 'resize') {
         this.adjustIframeHeight(event.data.height);
@@ -170,7 +176,7 @@ export default class HtmlArtifactRenderer { // Export class
 
     window.addEventListener('message', this.messageListener);
   }
-  
+
   /**
    * Set content security policy for the iframe - Deprecated if not needed
    * CSP is often better set via server headers or meta tags in the main document
@@ -184,8 +190,8 @@ export default class HtmlArtifactRenderer { // Export class
 
   // Cleanup listener when the component is destroyed (if applicable)
   destroy() {
-      if (this.messageListener) {
-          window.removeEventListener('message', this.messageListener);
-      }
+    if (this.messageListener) {
+      window.removeEventListener('message', this.messageListener);
+    }
   }
 }
