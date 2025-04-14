@@ -405,3 +405,22 @@ body:not(.dark-theme) .theme-toggle .moon-icon {
 #back-to-list-button:hover {
   background-color: var(--secondary-button-hover);
 }
+
+/* Wrapper for title and GitHub link */
+.header-title-area {
+  display: flex;
+  align-items: center; /* Vertically align title and icon */
+  gap: 0.5rem; /* Space between title and icon */
+}
+
+/* Style for the GitHub link */
+.github-link svg {
+  display: block; /* Prevents extra space below SVG */
+  color: var(--header-color); /* Match header text color */
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.github-link:hover svg {
+  opacity: 1.0;
+}
