@@ -1,24 +1,29 @@
 # Claude UI Elements
 
-A lightweight, standalone viewer for Claude AI responses and artifacts.
+A lightweight, standalone viewer for Claude AI responses and artifacts, powered by Vite.
 
 ## Overview
 
-Claude UI Elements is a focused implementation for rendering Claude's JSON responses, including specialized artifact renderers for various content types. This project provides a simple, efficient way to display Claude's responses with proper formatting and styling.
+Claude UI Elements is a focused implementation for rendering Claude's JSON responses, including specialized artifact renderers for various content types. This project provides a simple, efficient way to display Claude's responses with proper formatting and styling, supporting both single and multi-conversation JSON files.
 
 ## Features
 
-- Renders Claude message content with appropriate styling
+- Renders Claude message content with improved styling.
+- Loads JSON files containing an array of conversations.
+- Provides a searchable list view to browse and select conversations.
 - Supports various artifact types:
-  - Code with syntax highlighting
-  - Markdown content
+  - Code with syntax highlighting (PrismJS)
+  - Markdown content (Marked)
   - HTML content in sandboxed iframes
   - SVG graphics
   - Mermaid diagrams
-  - React components
-- Responsive design for different screen sizes
-- Copy functionality for code artifacts
-- Self-contained implementation option (single HTML file)
+  - React components (Basic structure, execution needs secure implementation)
+- Handles inline custom tags (`<antThinking>`, `<pointer*>`).
+- Responsive design.
+- Dark mode support.
+- Copy functionality for code artifacts.
+- Built with Vite.
+- Produces a single, self-contained HTML file for easy use.
 
 ## Getting Started
 
@@ -26,7 +31,7 @@ Claude UI Elements is a focused implementation for rendering Claude's JSON respo
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/claude-ui.git
+git clone https://github.com/1ps0/claude-ui.git
 
 # Navigate to the project directory
 cd claude-ui
@@ -37,24 +42,21 @@ npm install
 
 ### Usage
 
-You can use Claude UI Elements in two ways:
-
 #### 1. As a standalone HTML file
 
-Simply open the `build/claude-ui.html` file in a browser.
+First, build the project:
 
-#### 2. As a component in your own project
-
-```javascript
-// Import the main class
-import { ClaudeUI } from './path/to/ClaudeUI.js';
-
-// Initialize with a container element
-const claudeUI = new ClaudeUI('your-container-id');
-
-// Render a Claude response
-claudeUI.renderResponse(claudeResponseJSON);
+```bash
+npm run build 
 ```
+
+This command creates a single, self-contained HTML file at `dist/index.html`.
+
+Open the generated `dist/index.html` file in your web browser.
+
+#### 2. As components in your own project (Advanced)
+
+The core classes are built as ES Modules and could potentially be imported into another Vite project. Refer to the source code (`src/js/`) for details on classes like `ClaudeUI` and `MessageRenderer`.
 
 ## Development
 
@@ -62,30 +64,32 @@ claudeUI.renderResponse(claudeResponseJSON);
 
 ```
 claude-ui/
+├── dist/                   # Build output (contains index.html)
 ├── src/
-│   ├── index.html          # Demo page
 │   ├── css/                # Styling
-│   ├── js/                 # Core functionality
-│   │   └── renderers/      # Artifact renderers
-│   └── test/               # Test data
-├── build/                  # Built files
-└── package.json
+│   │   ├── main.css
+│   │   ├── message.css
+│   │   └── artifacts.css
+│   └── js/                 # Core ES Modules
+│       ├── main.js           # Application entry point, event handling
+│       ├── ClaudeUI.js       # Main application class, UI logic
+│       ├── MessageRenderer.js # Handles rendering messages & artifacts
+│       ├── ArtifactFactory.js # Creates appropriate artifact renderers
+│       └── renderers/      # Individual artifact renderers
+│           ├── CodeRenderer.js
+│           ├── MarkdownRenderer.js
+│           ├── HtmlRenderer.js
+│           ├── SvgRenderer.js
+│           ├── MermaidRenderer.js
+│           └── ReactRenderer.js
+├── index.html              # Main HTML entry point
+├── vite.config.js          # Vite configuration
+├── package.json
+├── README.md               # This file
+├── LICENSE                 # MIT License
+└── CONTRIBUTING.md         # Contribution Guidelines
 ```
 
-### Building
+### Running the Development Server
 
-To build the project into a single HTML file:
-
-```bash
-npm run build
 ```
-
-This will create `build/claude-ui.html` with all necessary CSS and JavaScript included.
-
-## License
-
-MIT
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
