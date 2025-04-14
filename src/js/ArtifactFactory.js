@@ -1,9 +1,18 @@
+// Import the specific renderer classes
+import CodeArtifactRenderer from './renderers/CodeRenderer.js';
+import MarkdownArtifactRenderer from './renderers/MarkdownRenderer.js';
+import HtmlArtifactRenderer from './renderers/HtmlRenderer.js';
+import SvgArtifactRenderer from './renderers/SvgRenderer.js';
+import MermaidArtifactRenderer from './renderers/MermaidRenderer.js';
+import ReactArtifactRenderer from './renderers/ReactRenderer.js';
+
 /**
  * Claude UI Elements
  * ArtifactFactory.js - Factory for creating artifact renderers
+ * Version 2: Refactored for Vite and ES Modules
  */
 
-class ArtifactRendererFactory {
+export default class ArtifactRendererFactory { // Export the class
   /**
    * Create a renderer for a specific artifact type
    * @param {string} artifactType - MIME type of the artifact

@@ -1,9 +1,10 @@
 /**
  * Claude UI Elements
  * HtmlRenderer.js - Renderer for HTML artifacts
+ * Version 2: Refactored for Vite and ES Modules (using DOM manipulation)
  */
 
-class HtmlArtifactRenderer {
+export default class HtmlArtifactRenderer { // Export class
   /**
    * Create a new HTML artifact renderer
    * @param {HTMLElement} element - Container element for the artifact
@@ -11,183 +12,180 @@ class HtmlArtifactRenderer {
   constructor(element) {
     this.element = element;
     this.element.classList.add('html-container');
+    this.iframe = null; // Keep track of the iframe
   }
   
   /**
-   * Render HTML content in a sandboxed iframe
+   * Render HTML content in a sandboxed iframe using DOM manipulation
    * @param {string} content - HTML content to render
    */
   render(content) {
-    // Remove any existing content
+    // Remove any existing content or iframe
     this.element.innerHTML = '';
     
     // Create a sandboxed iframe for rendering HTML content
-    const iframe = document.createElement('iframe');
+    this.iframe = document.createElement('iframe');
     
     // Set sandbox attributes for security
-    // Allow scripts but prevent top-level navigation and accessing parent
-    iframe.sandbox = 'allow-scripts allow-popups allow-same-origin';
+    this.iframe.sandbox = 'allow-scripts allow-popups allow-same-origin';
     
     // Set styling
-    iframe.style.width = '100%';
-    iframe.style.border = 'none';
-    iframe.style.minHeight = '300px';
+    this.iframe.style.width = '100%';
+    this.iframe.style.border = 'none';
+    this.iframe.style.minHeight = '300px'; // Initial height
     
     // Attach iframe to the DOM
-    this.element.appendChild(iframe);
+    this.element.appendChild(this.iframe);
     
-    // Write content to the iframe
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    iframeDoc.open();
-    
-    // Add base resources and styles to the iframe content
-    const enhancedContent = this.enhanceHtmlContent(content);
-    iframeDoc.write(enhancedContent);
-    iframeDoc.close();
-    
-    // Adjust iframe height to match content after it loads
-    this.adjustIframeHeight(iframe);
-    
-    // Listen for messages from the iframe (for resize events, etc.)
-    this.setupMessageListener(iframe);
-  }
-  
-  /**
-   * Enhance HTML content with additional resources
-   * @param {string} content - Original HTML content
-   * @returns {string} Enhanced HTML content
-   */
-  enhanceHtmlContent(content) {
-    // If content doesn't include the basic HTML structure, add it
-    if (!content.includes('<!DOCTYPE html>') && !content.includes('<html')) {
-      return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      line-height: 1.5;
-      padding: 1rem;
-      margin: 0;
-    }
-    
-    /* Ensure all content fits within the iframe */
-    img, video, canvas, svg {
-      max-width: 100%;
-      height: auto;
-    }
-    
-    /* Basic responsive grid */
-    .container {
-      width: 100%;
-      padding-right: 15px;
-      padding-left: 15px;
-      margin-right: auto;
-      margin-left: auto;
-    }
-    
-    /* Add any other basic styles needed */
-  </style>
-</head>
-<body>
-  ${content}
-  <script>
-    // Helper script to resize iframe
-    function notifyParent() {
-      const height = document.body.scrollHeight;
-      window.parent.postMessage({ type: 'resize', height: height }, '*');
-    }
-    
-    // Notify when content changes
-    window.addEventListener('load', notifyParent);
-    window.addEventListener('resize', notifyParent);
-    
-    // Run once immediately
-    notifyParent();
-  </script>
-</body>
-</html>`;
-    }
-    
-    // If content already has HTML structure, add only the resize script
-    if (!content.includes('notifyParent()') && content.includes('</body>')) {
-      return content.replace('</body>', `
-  <script>
-    // Helper script to resize iframe
-    function notifyParent() {
-      const height = document.body.scrollHeight;
-      window.parent.postMessage({ type: 'resize', height: height }, '*');
-    }
-    
-    // Notify when content changes
-    window.addEventListener('load', notifyParent);
-    window.addEventListener('resize', notifyParent);
-    
-    // Run once immediately
-    notifyParent();
-  </script>
-</body>`);
-    }
-    
-    // Return the original content if it can't be enhanced
-    return content;
-  }
-  
-  /**
-   * Adjust iframe height to match content
-   * @param {HTMLIFrameElement} iframe - iframe element to adjust
-   */
-  adjustIframeHeight(iframe) {
-    iframe.onload = () => {
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-      const height = iframeDoc.body.scrollHeight;
-      iframe.style.height = `${height + 20}px`;
+    // Wait for iframe to load before accessing its contentDocument
+    this.iframe.onload = () => {
+      const iframeDoc = this.iframe.contentDocument || this.iframe.contentWindow.document;
+      if (!iframeDoc) {
+        console.error('Could not access iframe document.');
+        return;
+      }
+      
+      // Write the user's HTML content
+      iframeDoc.open();
+      iframeDoc.write(this.getBoilerplateHTML(content)); // Add basic structure
+      iframeDoc.close();
+      
+      // Inject the helper script using DOM methods
+      this.injectHelperScript(iframeDoc);
+      
+      // Initial height adjustment
+      this.adjustIframeHeight();
+      
+      // Set up message listener after content is loaded
+      this.setupMessageListener();
     };
+
+    // Fallback/Error handling for srcdoc if needed, but writing directly is often better
+    // Try setting srcdoc first as a simpler alternative? Could have limitations.
+    // this.iframe.srcdoc = this.getBoilerplateHTML(content, true); // Add flag for script
+  }
+
+  /**
+   * Create basic HTML boilerplate to wrap the content
+   * @param {string} content - Original HTML content
+   * @returns {string} HTML string with basic structure
+   */
+  getBoilerplateHTML(content) {
+    // If content seems to be a full HTML doc, use it directly
+    if (content.trim().startsWith('<!DOCTYPE html') || content.trim().startsWith('<html')) {
+        // Potentially inject styles/scripts here if needed, but safer after load
+        return content;
+    }
+    // Otherwise, wrap the content
+    // Basic styles included here for simplicity, could be injected too
+    return (
+      '<!DOCTYPE html>\n' +
+      '<html lang="en">\n' +
+      '<head>\n' +
+      '  <meta charset="UTF-8">\n' +
+      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+      '  <style>\n' +
+      '    body { margin: 0; padding: 1rem; font-family: sans-serif; line-height: 1.5; }\n' +
+      '    img, video, canvas, svg { max-width: 100%; height: auto; }\n' +
+      '  </style>\n' +
+      '</head>\n' +
+      '<body>\n' +
+      content +
+      '</body>\n' +
+      '</html>'
+    );
+  }
+
+  /**
+   * Inject the parent communication script into the iframe
+   * @param {Document} iframeDoc - The iframe's document object
+   */
+  injectHelperScript(iframeDoc) {
+    try {
+        const scriptEl = iframeDoc.createElement('script');
+        scriptEl.textContent = `
+          function notifyParentResize() {
+            // Debounce or throttle this if it fires too often
+            const height = document.documentElement.scrollHeight;
+            window.parent.postMessage({ type: 'resize', height: height }, '*');
+          }
+          // Use ResizeObserver for more reliable dynamic height changes
+          const resizeObserver = new ResizeObserver(notifyParentResize);
+          resizeObserver.observe(document.body);
+          // Initial notification
+          window.addEventListener('load', notifyParentResize);
+          // Fallback for simple cases
+          setTimeout(notifyParentResize, 100); // Run after initial render
+        `;
+        // Append to body or head
+        if (iframeDoc.body) {
+            iframeDoc.body.appendChild(scriptEl);
+        } else {
+             iframeDoc.head.appendChild(scriptEl); // Fallback
+        }
+    } catch (error) {
+        console.error('Error injecting helper script into iframe:', error);
+    }
+  }
+  
+  /**
+   * Adjust iframe height based on content or message
+   * @param {number} [height] - Optional height from message
+   */
+  adjustIframeHeight(height) {
+    if (!this.iframe) return;
+    try {
+        const targetHeight = height || this.iframe.contentDocument?.documentElement?.scrollHeight;
+        if (targetHeight) {
+            // Add some padding
+            this.iframe.style.height = (targetHeight + 20) + 'px';
+        }
+    } catch (error) {
+        // Catch potential security errors accessing cross-origin frame content (if applicable)
+        console.warn('Could not automatically adjust iframe height:', error);
+    }
   }
   
   /**
    * Set up message listener for iframe communications
-   * @param {HTMLIFrameElement} iframe - iframe element to listen to
    */
-  setupMessageListener(iframe) {
-    window.addEventListener('message', (event) => {
-      // Check that the message is from our iframe
-      if (event.source !== iframe.contentWindow) {
+  setupMessageListener() {
+    // Ensure listener is only added once
+    if (this.messageListener) {
+        window.removeEventListener('message', this.messageListener);
+    }
+
+    this.messageListener = (event) => {
+      // Basic security checks
+      if (!this.iframe || event.source !== this.iframe.contentWindow) {
         return;
       }
       
       // Handle resize messages
       if (event.data && event.data.type === 'resize') {
-        iframe.style.height = `${event.data.height + 20}px`;
+        this.adjustIframeHeight(event.data.height);
       }
-    });
+      // Handle other potential messages from iframe if needed
+    };
+
+    window.addEventListener('message', this.messageListener);
   }
   
   /**
-   * Set content security policy for the iframe
-   * @param {string} policy - CSP policy string
+   * Set content security policy for the iframe - Deprecated if not needed
+   * CSP is often better set via server headers or meta tags in the main document
    */
+  /*
   setContentSecurityPolicy(policy) {
-    // Store for future renders
-    this.cspPolicy = policy;
-    
-    // Apply to existing iframe if any
-    const iframe = this.element.querySelector('iframe');
-    if (iframe) {
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-      
-      // Create meta tag for CSP
-      const meta = iframeDoc.createElement('meta');
-      meta.httpEquiv = 'Content-Security-Policy';
-      meta.content = policy;
-      
-      // Add to head
-      const head = iframeDoc.head || iframeDoc.getElementsByTagName('head')[0];
-      if (head) {
-        head.appendChild(meta);
+    // This is complex to apply reliably to dynamic iframe content via JS.
+    // Consider alternative security measures.
+  }
+  */
+
+  // Cleanup listener when the component is destroyed (if applicable)
+  destroy() {
+      if (this.messageListener) {
+          window.removeEventListener('message', this.messageListener);
       }
-    }
   }
 }

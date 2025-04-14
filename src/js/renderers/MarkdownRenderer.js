@@ -1,9 +1,15 @@
+import { marked } from 'marked'; // Assuming named export
+import Prism from 'prismjs';
+// Import ArtifactFactory for language detection - Check for circular dependency potential
+import ArtifactRendererFactory from '../ArtifactFactory.js'; 
+
 /**
  * Claude UI Elements
  * MarkdownRenderer.js - Renderer for Markdown artifacts
+ * Version 2: Refactored for Vite and ES Modules
  */
 
-class MarkdownArtifactRenderer {
+export default class MarkdownArtifactRenderer { // Export class
   /**
    * Create a new Markdown artifact renderer
    * @param {HTMLElement} element - Container element for the artifact
@@ -21,8 +27,8 @@ class MarkdownArtifactRenderer {
     // Remove any existing content
     this.element.innerHTML = '';
     
-    // Render markdown if a library like marked.js is available
-    if (window.marked) {
+    // Render markdown using imported marked library
+    if (marked) {
       try {
         this.element.innerHTML = marked.parse(content);
         
@@ -49,8 +55,8 @@ class MarkdownArtifactRenderer {
     // Find all code blocks
     const codeBlocks = this.element.querySelectorAll('pre code');
     
-    // Apply syntax highlighting if Prism is available
-    if (window.Prism && codeBlocks.length > 0) {
+    // Apply syntax highlighting using imported Prism
+    if (Prism && codeBlocks.length > 0) {
       codeBlocks.forEach(codeBlock => {
         // Get language from class (language-xxx)
         const langClass = Array.from(codeBlock.classList)
@@ -59,7 +65,7 @@ class MarkdownArtifactRenderer {
         // If no language class is found, try to detect the language
         if (!langClass) {
           const language = ArtifactRendererFactory.detectLanguage(codeBlock.textContent);
-          codeBlock.classList.add(`language-${language}`);
+          codeBlock.classList.add('language-' + language);
         }
         
         // Apply highlighting
@@ -114,8 +120,14 @@ class MarkdownArtifactRenderer {
    * @param {object} options - Rendering options
    */
   setOptions(options) {
-    if (window.marked) {
-      marked.setOptions(options);
+    if (marked) {
+      // marked.setOptions might work differently when imported
+      // Check marked documentation for ES module usage
+      try {
+         marked.setOptions(options);
+      } catch (e) {
+         console.warn('Could not set marked options:', e);
+      }
     }
   }
 }

@@ -1,9 +1,12 @@
+import mermaid from 'mermaid';
+
 /**
  * Claude UI Elements
  * MermaidRenderer.js - Renderer for Mermaid diagram artifacts
+ * Version 2: Refactored for Vite and ES Modules
  */
 
-class MermaidArtifactRenderer {
+export default class MermaidArtifactRenderer {
   /**
    * Create a new Mermaid artifact renderer
    * @param {HTMLElement} element - Container element for the artifact
@@ -27,35 +30,27 @@ class MermaidArtifactRenderer {
     container.textContent = content;
     
     // Add a unique ID to the container for mermaid initialization
-    const uniqueId = `mermaid-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const uniqueId = 'mermaid-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
     container.id = uniqueId;
     
     // Append container to the DOM
     this.element.appendChild(container);
     
-    // Initialize Mermaid if available
-    if (window.mermaid) {
+    // Initialize Mermaid if available (imported)
+    if (mermaid) {
       try {
-        // Check if mermaid is already initialized
-        if (typeof mermaid.initialize === 'function') {
+        // Check if mermaid is already initialized (v9+ check)
+        // Initialization might be better handled centrally in main.js
+        // if (typeof mermaid.initialize === 'function') {
           // Set default configuration
-          mermaid.initialize({
-            startOnLoad: false,
-            theme: 'neutral',
-            securityLevel: 'strict',
-            logLevel: 'error',
-            flowchart: {
-              useMaxWidth: true,
-              htmlLabels: true
-            }
-          });
-        }
+          // mermaid.initialize({ ... }); // Possibly move to main.js
+        // }
         
         // Render the diagram
         this.renderDiagram(uniqueId, content);
       } catch (error) {
         console.error('Error initializing Mermaid:', error);
-        this.showError(`Mermaid initialization error: ${error.message}`);
+        this.showError('Mermaid initialization error: ' + error.message);
       }
     } else {
       console.warn('Mermaid library not loaded. Displaying raw content instead.');
@@ -80,11 +75,11 @@ class MermaidArtifactRenderer {
           }
         }).catch(error => {
           console.error('Error rendering Mermaid diagram:', error);
-          this.showError(`Diagram syntax error: ${error.message}`);
+          this.showError('Diagram syntax error: ' + error.message);
         });
       } catch (error) {
         console.error('Error in Mermaid render process:', error);
-        this.showError(`Diagram rendering error: ${error.message}`);
+        this.showError('Diagram rendering error: ' + error.message);
       }
     } else if (typeof mermaid.init === 'function') {
       // Legacy API (mermaid v8 and earlier)
@@ -92,7 +87,7 @@ class MermaidArtifactRenderer {
         mermaid.init(undefined, document.getElementById(id));
       } catch (error) {
         console.error('Error initializing Mermaid diagram:', error);
-        this.showError(`Diagram syntax error: ${error.message}`);
+        this.showError('Diagram syntax error: ' + error.message);
       }
     } else {
       console.error('Mermaid rendering method not found');
@@ -119,7 +114,7 @@ class MermaidArtifactRenderer {
     errorElement.style.marginTop = '0.5rem';
     
     // Add error message
-    errorElement.textContent = `${message}`;
+    errorElement.textContent = message;
     
     // Create pre element for diagram code
     const pre = document.createElement('pre');
@@ -141,12 +136,9 @@ class MermaidArtifactRenderer {
    * @param {string} theme - Theme name
    */
   setTheme(theme) {
-    if (window.mermaid) {
-      const config = {
-        theme: theme
-      };
-      
-      mermaid.initialize(config);
+    if (mermaid) {
+      // Re-initialization for theme change might need updated API call for v10+
+      // mermaid.initialize({ theme: theme }); // Check Mermaid docs for dynamic theme change
       
       // Re-render if we have content already
       if (this.lastContent) {

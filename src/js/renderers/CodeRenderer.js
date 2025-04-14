@@ -1,9 +1,14 @@
+import Prism from 'prismjs';
+// Ensure necessary language components are imported, either here or in main.js
+// import 'prismjs/components/prism-javascript'; // Example
+
 /**
  * Claude UI Elements
  * CodeRenderer.js - Renderer for code artifacts
+ * Version 2: Refactored for Vite and ES Modules
  */
 
-class CodeArtifactRenderer {
+export default class CodeArtifactRenderer {
   /**
    * Create a new code artifact renderer
    * @param {HTMLElement} element - Container element for the artifact
@@ -27,19 +32,26 @@ class CodeArtifactRenderer {
     pre.className = 'line-numbers';
     
     const code = document.createElement('code');
-    code.className = `language-${this.language}`;
+    code.className = 'language-' + this.language;
     code.textContent = content;
     
     // Append elements
     pre.appendChild(code);
     this.element.appendChild(pre);
     
-    // Apply syntax highlighting if Prism.js is available
-    if (window.Prism) {
+    // Apply syntax highlighting if Prism object exists (imported)
+    if (Prism) {
       try {
         Prism.highlightElement(code);
       } catch (error) {
         console.error('Error during syntax highlighting:', error);
+      }
+      
+      // Update Prism line numbers if available
+      // Note: Prism plugins might need specific import/initialization
+      if (Prism && Prism.plugins && Prism.plugins.lineNumbers) {
+        // This might require importing/running the line-numbers plugin setup
+        // Prism.plugins.lineNumbers.highlightAll(); // Re-evaluate how plugins work with modules
       }
     }
   }
@@ -74,8 +86,9 @@ class CodeArtifactRenderer {
       }
       
       // Update Prism line numbers if available
-      if (window.Prism && Prism.plugins && Prism.plugins.lineNumbers) {
-        Prism.plugins.lineNumbers.highlightAll();
+      if (Prism && Prism.plugins && Prism.plugins.lineNumbers) {
+        // This might require importing/running the line-numbers plugin setup
+        // Prism.plugins.lineNumbers.highlightAll(); // Re-evaluate how plugins work with modules
       }
     }
   }

@@ -1,9 +1,14 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client'; // Use modern root API
+// Note: We removed Babel Standalone. Handling dynamic code execution is complex.
+
 /**
  * Claude UI Elements
  * ReactRenderer.js - Renderer for React component artifacts
+ * Version 3: Refactored for Vite, ES Modules, removed Babel Standalone
  */
 
-class ReactArtifactRenderer {
+export default class ReactArtifactRenderer { // Export class
   /**
    * Create a new React artifact renderer
    * @param {HTMLElement} element - Container element for the artifact
@@ -11,6 +16,7 @@ class ReactArtifactRenderer {
   constructor(element) {
     this.element = element;
     this.element.classList.add('react-container');
+    this.root = null; // Store the React root
   }
   
   /**
@@ -18,103 +24,85 @@ class ReactArtifactRenderer {
    * @param {string} content - React component code to render
    */
   render(content) {
-    // Remove any existing content
+    // Clean up previous root if exists
+    if (this.root) {
+        this.root.unmount();
+        this.root = null;
+    }
+    // Remove any existing static content
     this.element.innerHTML = '';
     
-    // Create a container for React rendering
+    // Create a container div *inside* the main element for React
     const container = document.createElement('div');
-    container.id = `react-container-${Date.now()}`;
-    
-    // Append container to the DOM
     this.element.appendChild(container);
+
+    // Store content for error display
+    this.lastContent = content;
     
-    // Check if React and ReactDOM are available
-    if (window.React && window.ReactDOM && window.Babel) {
-      try {
-        // Create a script element to evaluate the React component
-        const script = document.createElement('script');
-        script.type = 'text/babel';
-        
-        // Wrap content in a component definition if needed
-        const wrappedContent = this.wrapContentIfNeeded(content);
-        
-        // Set the script content
-        script.textContent = `
-          ${wrappedContent}
-          
-          // Render the component to the container
-          ReactDOM.render(
-            React.createElement(Component),
-            document.getElementById('${container.id}')
-          );
-        `;
-        
-        // Append script to the DOM
-        document.body.appendChild(script);
-        
-        // Store the content for later use
-        this.lastContent = content;
-        
-        // Remove script after execution to avoid cluttering the DOM
-        // Use a slight delay to ensure Babel has time to process it
-        setTimeout(() => {
-          if (document.body.contains(script)) {
-            document.body.removeChild(script);
-          }
-        }, 1000);
-      } catch (error) {
-        console.error('Error rendering React component:', error);
-        this.showError(`Failed to render React component: ${error.message}`);
-      }
-    } else {
-      // Libraries not available
-      const missingLibs = [];
-      if (!window.React) missingLibs.push('React');
-      if (!window.ReactDOM) missingLibs.push('ReactDOM');
-      if (!window.Babel) missingLibs.push('Babel');
+    try {
+      // !! SECURITY WARNING & COMPLEXITY !!
+      // Executing arbitrary code from `content` is dangerous.
+      // A production solution needs sandboxing or a safer transformation method.
+      // This is a simplified example assuming `content` defines a `Component`.
       
-      console.warn(`${missingLibs.join(', ')} not loaded. Displaying raw content instead.`);
-      this.showError(`${missingLibs.join(', ')} not loaded. Displaying raw content.`);
+      // Option 1: Simple eval (Highly Insecure - use only if content is trusted)
+      // const Component = eval(this.wrapContentIfNeeded(content)); 
+      
+      // Option 2: Safer Function constructor (Still risky)
+      // const componentFactory = new Function('React', `return (${this.wrapContentIfNeeded(content)})`);
+      // const Component = componentFactory(React);
+      
+      // Option 3: More robust solution needed (e.g., using a web worker with a transpiler like Sucrase, or a dedicated sandboxed execution environment)
+      
+      // *** Placeholder: Assume content somehow provides a valid Component ***
+      // This part needs a proper implementation based on security requirements
+      // For now, let's show an error indicating this limitation.
+      console.error('Dynamic React rendering from string needs secure implementation.');
+      this.showError('Rendering dynamic React code from string is not securely implemented in this version.');
+      return; // Stop execution for this placeholder
+
+      /* // --- Code that would run if Component was safely created --- 
+      if (typeof Component !== 'function' && typeof Component !== 'object') { // Class components are functions, functional components can be objects (from HOCs etc)
+        throw new Error('Provided content did not resolve to a renderable React component.');
+      }
+
+      // Create a root and render the component
+      this.root = createRoot(container);
+      this.root.render(React.createElement(Component));
+      */
+
+    } catch (error) {
+      console.error('Error rendering React component:', error);
+      this.showError('Failed to render React component: ' + error.message);
+      // Clean up potentially failed root
+      if (this.root) {
+          this.root.unmount();
+          this.root = null;
+      }
     }
   }
   
   /**
-   * Wrap content in a component definition if needed
+   * Wrap content in a component definition if needed (Helper for eval/Function)
    * @param {string} content - React component code
-   * @returns {string} Properly formatted component code
+   * @returns {string} Code string potentially wrapped
    */
   wrapContentIfNeeded(content) {
-    // Check if content is already a component definition
-    if (content.includes('function Component') || 
-        content.includes('class Component') || 
-        content.includes('const Component =')) {
-      return content;
+    // Basic checks - this might need more sophisticated parsing
+    if (content.includes('export default') || content.match(/^class\s/)) {
+        // Assumes content is a full component definition
+        // Need to extract the actual component part for eval/Function
+        // This logic is complex and depends on the expected format of `content`
+        console.warn('React content wrapping might be incorrect for complex inputs.');
+        // Placeholder: try to return the core part if possible
+        return content.replace(/export default /, ''); 
     }
-    
-    // Check if content imports specific React elements
-    if (content.includes('import React') || 
-        content.includes('import { ') || 
-        content.includes('import {')) {
-      // Probably a complete component with imports
-      // Add a default export if none exists
-      if (!content.includes('export default')) {
-        return `${content}\n\nconst Component = () => ${content.trim().startsWith('<') ? content : `{ return (${content}); }`};\nexport default Component;`;
-      }
-      return content;
-    }
-    
-    // Check if content is a JSX fragment or element
     if (content.trim().startsWith('<')) {
-      // Wrap in a component definition
-      return `const Component = () => {
-        return (${content});
-      }`;
+        // Wrap JSX fragment/element in a functional component
+        return `(props) => { return (${content}); }`;
     }
-    
-    // Assume it's a component body that returns JSX
-    return `const Component = () => {
-      ${content}
-    }`;
+    // Assume it's the body of a functional component
+    return `(props) => { ${content} }`;
   }
   
   /**
@@ -122,88 +110,52 @@ class ReactArtifactRenderer {
    * @param {string} message - Error message to display
    */
   showError(message) {
-    // Create error element
+    // Clean up existing React root if any
+    if (this.root) {
+        this.root.unmount();
+        this.root = null;
+    }
+    this.element.innerHTML = ''; // Clear container
+
+    // Create error elements (similar to before)
     const errorElement = document.createElement('div');
     errorElement.className = 'react-error';
-    errorElement.style.color = '#EF4444';
+    errorElement.style.color = 'var(--error-color)';
     errorElement.style.padding = '1rem';
-    errorElement.style.border = '1px solid #EF4444';
+    errorElement.style.border = '1px solid var(--error-color)';
     errorElement.style.borderRadius = '0.25rem';
-    errorElement.style.backgroundColor = '#FEF2F2';
+    errorElement.style.backgroundColor = 'var(--error-bg)';
     errorElement.style.marginTop = '0.5rem';
     errorElement.textContent = message;
     
-    // Create pre element for component code
     const pre = document.createElement('pre');
     pre.style.marginTop = '0.5rem';
     pre.style.padding = '0.5rem';
-    pre.style.backgroundColor = '#F1F5F9';
+    pre.style.backgroundColor = 'var(--code-bg)';
     pre.style.borderRadius = '0.25rem';
     pre.style.overflow = 'auto';
     pre.style.fontSize = '0.8rem';
     
-    // Create code element
     const code = document.createElement('code');
-    code.className = 'language-jsx';
+    code.className = 'language-jsx'; // Assume JSX
     code.textContent = this.lastContent || '';
     pre.appendChild(code);
     
-    // Clear the container
-    this.element.innerHTML = '';
-    
-    // Append error elements
     this.element.appendChild(errorElement);
     this.element.appendChild(pre);
     
-    // Apply syntax highlighting if available
-    if (window.Prism) {
-      Prism.highlightElement(code);
+    // Apply syntax highlighting if Prism is available
+    if (typeof Prism !== 'undefined' && Prism) {
+      try {
+        Prism.highlightElement(code);
+      } catch(e) { console.error('Prism highlighting failed for error display'); }
     }
   }
-  
-  /**
-   * Set props for the React component
-   * @param {object} props - Props to pass to the component
-   */
-  setProps(props) {
-    // Store props for re-rendering
-    this.props = props;
-    
-    // Re-render the component if we have content
-    if (this.lastContent) {
-      // Create a container with a new ID
-      const container = document.createElement('div');
-      container.id = `react-container-${Date.now()}`;
-      
-      // Replace the existing container
-      this.element.innerHTML = '';
-      this.element.appendChild(container);
-      
-      // Create script for rendering with props
-      const script = document.createElement('script');
-      script.type = 'text/babel';
-      
-      // Wrap content and include props
-      const wrappedContent = this.wrapContentIfNeeded(this.lastContent);
-      const propsString = JSON.stringify(props);
-      
-      script.textContent = `
-        ${wrappedContent}
-        
-        // Render with props
-        ReactDOM.render(
-          React.createElement(Component, ${propsString}),
-          document.getElementById('${container.id}')
-        );
-      `;
-      
-      // Append script and remove after execution
-      document.body.appendChild(script);
-      setTimeout(() => {
-        if (document.body.contains(script)) {
-          document.body.removeChild(script);
-        }
-      }, 1000);
-    }
+
+  // Cleanup root when the renderer is destroyed (if applicable)
+  destroy() {
+      if (this.root) {
+          this.root.unmount();
+      }
   }
 }

@@ -1,6 +1,7 @@
 /* 
  * Claude UI Elements
  * main.css - Core styling for the application
+ * Version 4: Enhanced dark mode styling and theme toggle
  */
 
 /* Reset and base styles */
@@ -10,41 +11,166 @@
   padding: 0;
 }
 
+:root {
+  /* Light theme variables */
+  --bg-color: #F9FAFB;
+  --container-bg: white;
+  --header-bg: #7C3AED;
+  --header-color: white;
+  --text-color: #333;
+  --muted-text-color: #64748B;
+  --border-color: #E2E8F0;
+  --user-message-bg: #F1F5F9;
+  --assistant-message-bg: #F8FAFC;
+  --assistant-message-border: #7C3AED;
+  --code-bg: #F1F5F9;
+  --primary-button: #7C3AED;
+  --primary-button-hover: #6D28D9;
+  --secondary-button: #64748B;
+  --secondary-button-hover: #475569;
+  --file-button: #2563EB;
+  --file-button-hover: #1D4ED8;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --error-color: #EF4444;
+  --error-bg: #FEF2F2;
+  --artifact-header-bg: #F8FAFC;
+}
+
+.dark-theme {
+  /* Dark theme variables */
+  --bg-color: #111827;
+  --container-bg: #1F2937;
+  --header-bg: #6D28D9;
+  --header-color: white;
+  --text-color: #F9FAFB;
+  --muted-text-color: #9CA3AF;
+  --border-color: #374151;
+  --user-message-bg: #374151;
+  --assistant-message-bg: #1F2937;
+  --assistant-message-border: #8B5CF6;
+  --code-bg: #2D3748;
+  --primary-button: #6D28D9;
+  --primary-button-hover: #5B21B6;
+  --secondary-button: #4B5563;
+  --secondary-button-hover: #374151;
+  --file-button: #1D4ED8;
+  --file-button-hover: #1E40AF;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --error-color: #F87171;
+  --error-bg: #7F1D1D;
+  --artifact-header-bg: #2D3748;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.5;
-  color: #333;
-  background-color: #F9FAFB;
+  color: var(--text-color);
+  background-color: var(--bg-color);
   padding: 2rem 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Main container */
 .claude-container {
   max-width: 900px;
   margin: 0 auto;
-  background-color: white;
+  background-color: var(--container-bg);
   border-radius: 0.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px var(--shadow-color);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100vh;
   max-height: 800px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Header */
 .claude-header {
   padding: 1rem;
-  background-color: #7C3AED;
-  color: white;
+  background-color: var(--header-bg);
+  color: var(--header-color);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  transition: background-color 0.3s ease;
+}
+
+.header-row {
+  display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .claude-header h1 {
   font-size: 1.5rem;
   font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--header-color);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-toggle .sun-icon {
+  display: none;
+}
+
+.theme-toggle .moon-icon {
+  display: block;
+}
+
+body:not(.dark-theme) .theme-toggle .sun-icon {
+  display: block;
+}
+
+body:not(.dark-theme) .theme-toggle .moon-icon {
+  display: none;
+}
+
+/* Conversation metadata */
+.conversation-info {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-top: 0.5rem;
+}
+
+.conversation-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.metadata-item {
+  display: flex;
+  align-items: center;
+}
+
+.metadata-label {
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+.metadata-value {
+  opacity: 0.8;
 }
 
 /* Message container */
@@ -54,18 +180,22 @@ body {
   padding: 1rem;
   flex-grow: 1;
   overflow-y: auto;
+  background-color: var(--container-bg);
+  transition: background-color 0.3s ease;
 }
 
 /* Test controls */
 .test-controls {
   padding: 1rem;
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid var(--border-color);
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+  transition: border-color 0.3s ease;
 }
 
 .test-controls button {
-  background-color: #7C3AED;
+  background-color: var(--primary-button);
   color: white;
   border: none;
   border-radius: 0.25rem;
@@ -76,17 +206,36 @@ body {
 }
 
 .test-controls button:hover {
-  background-color: #6D28D9;
+  background-color: var(--primary-button-hover);
+}
+
+/* File input button specific styling */
+#load-file-button {
+  background-color: var(--file-button);
+}
+
+#load-file-button:hover {
+  background-color: var(--file-button-hover);
+}
+
+/* Clear button specific styling */
+#clear-button {
+  background-color: var(--secondary-button);
+}
+
+#clear-button:hover {
+  background-color: var(--secondary-button-hover);
 }
 
 /* Error state */
 .error-message {
-  color: #EF4444;
+  color: var(--error-color);
   padding: 1rem;
-  border: 1px solid #EF4444;
+  border: 1px solid var(--error-color);
   border-radius: 0.5rem;
   margin: 1rem 0;
-  background-color: #FEF2F2;
+  background-color: var(--error-bg);
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Loading indicator */
@@ -98,17 +247,55 @@ body {
 }
 
 .loading-spinner {
-  border: 3px solid #F3F4F6;
-  border-top: 3px solid #7C3AED;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--primary-button);
   border-radius: 50%;
   width: 24px;
   height: 24px;
   animation: spin 1s linear infinite;
+  transition: border-color 0.3s ease;
+}
+
+.loading-text {
+  margin-left: 0.75rem;
+  color: var(--muted-text-color);
+  transition: color 0.3s ease;
 }
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Citations */
+.citation {
+  font-size: 0.75em;
+  vertical-align: super;
+  color: var(--primary-button);
+  cursor: help;
+  margin: 0 0.1em;
+  transition: color 0.3s ease;
+}
+
+/* Attachments and files */
+.attachments-container,
+.files-container {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.attachment-item,
+.file-item {
+  background-color: var(--code-bg);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease;
 }
 
 /* Responsive adjustments */
@@ -121,5 +308,15 @@ body {
   
   body {
     padding: 1rem;
+  }
+  
+  .test-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .conversation-metadata {
+    flex-direction: column;
+    gap: 0.25rem;
   }
 }

@@ -1,91 +1,266 @@
 /* 
  * Claude UI Elements
- * message.css - Styling for message bubbles and content
+ * artifacts.css - Styling for various artifact types
+ * Version 2: Updated for dark mode support
  */
 
-/* Message bubbles */
-.user-message {
-  align-self: flex-end;
-  background-color: #F1F5F9;
-  border-radius: 1rem 1rem 0 1rem;
-  padding: 0.75rem 1rem;
-  margin: 0.5rem 0;
-  max-width: 80%;
+/* Base artifact container */
+.artifact-container {
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background-color: var(--container-bg);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-.claude-message {
-  align-self: flex-start;
-  background-color: #F8FAFC;
-  border-radius: 1rem 1rem 1rem 0;
-  padding: 0.75rem 1rem;
-  margin: 0.5rem 0;
-  max-width: 80%;
-  border-left: 3px solid #7C3AED;
+/* Artifact header */
+.artifact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: var(--artifact-header-bg);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Message text formatting */
-.message-text {
-  white-space: pre-wrap;
-  word-break: break-word;
+/* Artifact title */
+.artifact-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  transition: color 0.3s ease;
 }
 
-.message-text p {
-  margin-bottom: 0.75rem;
+/* Artifact type badge */
+.artifact-type {
+  font-size: 0.8rem;
+  background-color: var(--code-bg);
+  color: var(--muted-text-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.message-text p:last-child {
-  margin-bottom: 0;
+/* Artifact content container */
+.artifact-content {
+  padding: 1rem;
+  overflow: auto;
+  max-height: 500px;
+  color: var(--text-color);
+  transition: color 0.3s ease;
 }
 
-/* Links within messages */
-.message-text a {
-  color: #7C3AED;
+/* Code artifact styling */
+.artifact-content pre {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+.artifact-content code {
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9rem;
+  display: block;
+  overflow-x: auto;
+}
+
+/* Markdown artifact styling */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.markdown-content h1 {
+  font-size: 1.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.25rem;
+}
+
+.markdown-content p {
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.markdown-content a {
+  color: var(--primary-button);
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.message-text a:hover {
+.markdown-content a:hover {
   text-decoration: underline;
 }
 
-/* Inline code */
-.message-text code {
-  background-color: #F1F5F9;
-  padding: 0.2rem 0.4rem;
+.markdown-content blockquote {
+  border-left: 3px solid var(--border-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  color: var(--muted-text-color);
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.markdown-content table th,
+.markdown-content table td {
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  transition: border-color 0.3s ease;
+}
+
+.markdown-content table th {
+  background-color: var(--artifact-header-bg);
+  transition: background-color 0.3s ease;
+}
+
+/* HTML artifact styling */
+.html-container iframe {
+  width: 100%;
+  min-height: 300px;
+  border: none;
+  background-color: white; /* Keep iframe background white for content visibility */
+}
+
+/* SVG artifact styling */
+.svg-container svg {
+  max-width: 100%;
+  height: auto;
+  background-color: var(--container-bg);
+  transition: background-color 0.3s ease;
+}
+
+/* Mermaid artifact styling */
+.mermaid-container {
+  text-align: center;
+}
+
+.mermaid-container .mermaid {
+  background-color: var(--container-bg);
+  transition: background-color 0.3s ease;
+}
+
+/* React artifact styling */
+.react-container {
+  min-height: 100px;
+}
+
+/* Copy button */
+.copy-button {
+  background-color: var(--primary-button);
+  color: white;
+  border: none;
   border-radius: 0.25rem;
-  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-  font-size: 0.9em;
-}
-
-/* Message metadata */
-.message-metadata {
+  padding: 0.25rem 0.5rem;
   font-size: 0.8rem;
-  color: #64748B;
-  margin-top: 0.25rem;
-  text-align: right;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-/* Message avatar/icon */
-.message-avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  margin-right: 0.5rem;
+.copy-button:hover {
+  background-color: var(--primary-button-hover);
 }
 
-/* Message header with role indicator */
-.message-header {
+/* Artifact actions container */
+.artifact-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Expand/collapse button */
+.expand-button {
+  background: none;
+  border: none;
+  color: var(--muted-text-color);
+  cursor: pointer;
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
-  font-size: 0.8rem;
-  color: #64748B;
+  transition: color 0.3s ease;
 }
 
-/* Error state for messages */
-.error {
-  border-left-color: #EF4444;
+.expand-button:hover {
+  color: var(--text-color);
 }
 
-.error .message-text {
-  color: #EF4444;
+/* Expanded artifact content */
+.artifact-content.expanded {
+  max-height: none;
+}
+
+/* Error states for artifacts */
+.mermaid-error,
+.react-error {
+  color: var(--error-color);
+  padding: 0.5rem;
+  border: 1px solid var(--error-color);
+  border-radius: 0.25rem;
+  background-color: var(--error-bg);
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Dark mode specific adjustments for code highlighting */
+.dark-theme .artifact-content pre {
+  background-color: var(--code-bg) !important;
+}
+
+.dark-theme .artifact-content code {
+  color: #e3e3e3 !important;
+}
+
+.dark-theme .artifact-content .token.comment {
+  color: #6a9955 !important;
+}
+
+.dark-theme .artifact-content .token.string {
+  color: #ce9178 !important;
+}
+
+.dark-theme .artifact-content .token.number {
+  color: #b5cea8 !important;
+}
+
+.dark-theme .artifact-content .token.keyword {
+  color: #569cd6 !important;
+}
+
+.dark-theme .artifact-content .token.function {
+  color: #dcdcaa !important;
+}
+
+.dark-theme .svg-reset-button {
+  background-color: var(--primary-button);
+  color: white;
 }

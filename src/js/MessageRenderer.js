@@ -1,9 +1,14 @@
+import ArtifactRendererFactory from './ArtifactFactory.js';
+// Potentially import formatTimestamp if moved to a utility file or defined here
+// import { formatTimestamp } from './utils.js'; 
+
 /**
  * Claude UI Elements
  * MessageRenderer.js - Handles rendering of messages and artifacts
+ * Version 2: Refactored for Vite and ES Modules
  */
 
-class ClaudeMessageRenderer {
+export default class ClaudeMessageRenderer { // Export the class
   /**
    * Create a new message renderer
    * @param {HTMLElement} container - Container element for messages
@@ -94,7 +99,10 @@ class ClaudeMessageRenderer {
       metadataElement.className = 'message-metadata';
       
       const timestamp = new Date(message.timestamp);
-      metadataElement.textContent = formatTimestamp(timestamp);
+      // Assume formatTimestamp is available globally or imported
+      // If formatTimestamp remains in main.js, this needs adjustment 
+      // (e.g., pass it during construction or import it if exported)
+      metadataElement.textContent = this.formatTimestamp(timestamp); // Or call imported function
       
       messageElement.appendChild(metadataElement);
     }
@@ -167,7 +175,7 @@ class ClaudeMessageRenderer {
     
     // Add specific class based on artifact type
     const typeClass = artifact.type.split('/').pop().replace(/\./g, '-');
-    content.classList.add(`${typeClass}-container`);
+    content.classList.add(typeClass + '-container');
     
     // Determine the language for code artifacts
     let language = 'javascript'; // Default language
@@ -235,5 +243,15 @@ class ClaudeMessageRenderer {
    */
   scrollToBottom() {
     this.container.scrollTop = this.container.scrollHeight;
+  }
+
+  // Temporary placeholder for formatTimestamp - ideally import or pass in
+  // Remove this if formatTimestamp is properly imported/provided
+  formatTimestamp(date) {
+    return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).format(date);
   }
 }

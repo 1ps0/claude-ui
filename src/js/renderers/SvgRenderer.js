@@ -1,9 +1,10 @@
 /**
  * Claude UI Elements
  * SvgRenderer.js - Renderer for SVG artifacts
+ * Version 2: Refactored for Vite and ES Modules
  */
 
-class SvgArtifactRenderer {
+export default class SvgArtifactRenderer {
   /**
    * Create a new SVG artifact renderer
    * @param {HTMLElement} element - Container element for the artifact
@@ -56,7 +57,7 @@ class SvgArtifactRenderer {
       const numericHeight = parseFloat(height);
       
       if (!isNaN(numericWidth) && !isNaN(numericHeight)) {
-        svg.setAttribute('viewBox', `0 0 ${numericWidth} ${numericHeight}`);
+        svg.setAttribute('viewBox', '0 0 ' + numericWidth + ' ' + numericHeight);
       }
     }
     
